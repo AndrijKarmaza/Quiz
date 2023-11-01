@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
+import Webpage from "./src/pages/Webpage";
+import Quiz from "./src/pages/Quiz";
 
 export default function App() {
+  const baseURL = "https://rozeta.com.ua/ua/";
+
+  const [isNetworkOk, setIsNetworkOk] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchPage() {
+      try {
+        setIsLoading(true);
+        const res = await axios.get(baseURL);
+        res.status !== 200 && setIsNetworkOk(false);
+      } catch {
+        setIsNetworkOk(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchPage();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      {isLoading && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+          }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
+      )}
+      {isNetworkOk ? <Webpage url={baseURL} /> : <Quiz />}
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
