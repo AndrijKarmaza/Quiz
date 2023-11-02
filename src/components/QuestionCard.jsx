@@ -1,10 +1,20 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import uuid from "react-native-uuid";
+import questions from "../data/questions";
 
-const QuestionCard = ({ question, answers, correctAnswer, selectedAnswer }) => {
+const QuestionCard = ({
+  currQuestIndex,
+  correctAnswer,
+  selectedAnswer,
+  checkAnswer,
+  isButtonActive,
+}) => {
+  const question = questions[currQuestIndex].question;
+  const answers = questions[currQuestIndex].answers;
+
   return (
     <View>
-      <Text>{question}</Text>
+      <Text style={styles.question}>{question}</Text>
       <View>
         {answers.map((answer) => (
           <TouchableOpacity
@@ -30,6 +40,14 @@ const QuestionCard = ({ question, answers, correctAnswer, selectedAnswer }) => {
 };
 
 const styles = StyleSheet.create({
+  question: {
+    marginTop: 30,
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 20,
+    backgroundColor: "#00FFFF",
+  },
+
   answer: {
     padding: 12,
     marginTop: 10,

@@ -1,15 +1,11 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, ImageBackground } from "react-native";
 import questions from "../data/questions";
-import { useState } from "react";
-import uuid from "react-native-uuid";
+import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import ModalVindow from "../components/ModalVindow";
+import QuestionCard from "../components/QuestionCard";
+import Progress from "../components/Progress";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Quiz = () => {
   const [currQuestIndex, setCurrQuestIndex] = useState(0);
@@ -19,6 +15,19 @@ const Quiz = () => {
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
   const [isModalvisible, setIsModalVisible] = useState(false);
   const [score, setScore] = useState(0);
+  const [isResultVisible, setIsResultVisible] = useState(false);
+  const [result, setResult] = useState([]);
+
+  const length = questions.length;
+
+  useEffect(() => {
+    async function settingDataToStorage() {
+      try {
+        await AsyncStorage.setItem("result", JSON.stringify(result));
+      } catch (error) {}
+    }
+    settingDataToStorage();
+  }, [result]);
 
   const checkAnswer = (answer) => {
     correct = questions[currQuestIndex]["correct_answer"];
@@ -29,27 +38,33 @@ const Quiz = () => {
     setIsNextButtonVisible(true);
   };
 
-  const defaulDetting = () => {
+  const defaulSetting = () => {
     setSelectedAnswer(null);
     setCorrectAnswer(null);
     setIsButtonActive(true);
     setIsNextButtonVisible(false);
+    setIsResultVisible(false);
   };
 
   const onNextBtnPress = () => {
     setCurrQuestIndex(currQuestIndex + 1);
-    defaulDetting();
+    defaulSetting();
   };
 
   const onResultBtnPress = () => {
     setIsModalVisible(true);
+    setResult([...result, score]);
   };
 
   const newGamePlay = () => {
-    defaulDetting();
+    defaulSetting();
     setIsModalVisible(false);
     setCurrQuestIndex(0);
     setScore(0);
+  };
+
+  const seeResult = () => {
+    setIsResultVisible(true);
   };
 
   return (
@@ -60,30 +75,14 @@ const Quiz = () => {
     >
       {!isModalvisible && (
         <>
-          <Text>
-            Питання {currQuestIndex + 1} / {questions.length}
-          </Text>
-          <Text>{questions[currQuestIndex].question}</Text>
-          <View>
-            {questions[currQuestIndex].answers.map((answer) => (
-              <TouchableOpacity
-                key={uuid.v4()}
-                style={{
-                  ...styles.answer,
-                  backgroundColor:
-                    answer === correctAnswer
-                      ? "#90EE90"
-                      : answer === selectedAnswer
-                      ? "#FF6347"
-                      : "#F0F8FF",
-                }}
-                onPress={() => checkAnswer(answer)}
-                disabled={!isButtonActive}
-              >
-                <Text>{answer}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Progress currQuestIndex={currQuestIndex} length={length} />
+          <QuestionCard
+            currQuestIndex={currQuestIndex}
+            correctAnswer={correctAnswer}
+            selectedAnswer={selectedAnswer}
+            checkAnswer={checkAnswer}
+            isButtonActive={isButtonActive}
+          />
           {currQuestIndex === questions.length - 1 && isNextButtonVisible ? (
             <Button
               text={"Подивитись результат"}
@@ -102,6 +101,8 @@ const Quiz = () => {
           score={score}
           isVisible={isModalvisible}
           onBtnPress={newGamePlay}
+          isResultVisible={isResultVisible}
+          seeResult={seeResult}
         />
       )}
     </ImageBackground>
@@ -114,26 +115,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 50,
-  },
-
-  answer: {
-    padding: 12,
-    marginTop: 10,
-    borderRadius: 10,
-  },
-
-  btn: {
-    padding: 12,
-    borderRadius: 10,
-    backgroundColor: "#00FFFF",
-    marginTop: 30,
-  },
-
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 

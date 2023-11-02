@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
-import Webpage from "./src/pages/Webpage";
-import Quiz from "./src/pages/Quiz";
+import Webpage from "./src/screens/Webpage";
+import Quiz from "./src/screens/Quiz";
 
 export default function App() {
   const baseURL = "https://rozeta.com.ua/ua/";
 
-  const [isNetworkOk, setIsNetworkOk] = useState(true);
+  const [isNetworkOk, setIsNetworkOk] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function App() {
       try {
         setIsLoading(true);
         const res = await axios.get(baseURL);
-        res.status !== 200 && setIsNetworkOk(false);
+        res.status === 200 && setIsNetworkOk(true);
       } catch {
         setIsNetworkOk(false);
       } finally {
@@ -25,19 +25,20 @@ export default function App() {
     fetchPage();
   }, []);
 
-  return (
-    <>
-      {isLoading && (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-          }}
-        >
-          <ActivityIndicator size="large" />
-        </View>
-      )}
-      {isNetworkOk ? <Webpage url={baseURL} /> : <Quiz />}
-    </>
-  );
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } else if (!isLoading && isNetworkOk) {
+    return <Webpage url={baseURL} />;
+  } else {
+    return <Quiz />;
+  }
 }
