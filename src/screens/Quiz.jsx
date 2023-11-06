@@ -1,4 +1,4 @@
-import { StyleSheet, Text, ImageBackground } from "react-native";
+import { StyleSheet, ImageBackground } from "react-native";
 import questions from "../data/questions";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
@@ -6,6 +6,7 @@ import ModalVindow from "../components/ModalVindow";
 import QuestionCard from "../components/QuestionCard";
 import Progress from "../components/Progress";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Welcome from "../components/Welcome";
 
 const Quiz = () => {
   const [currQuestIndex, setCurrQuestIndex] = useState(0);
@@ -17,8 +18,19 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
   const [isResultVisible, setIsResultVisible] = useState(false);
   const [result, setResult] = useState([]);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const length = questions.length;
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const value = await AsyncStorage.getItem("result");
+        value && setResult(JSON.parse(value));
+      } catch (error) {}
+    }
+    getData();
+  }, []);
 
   useEffect(() => {
     async function settingDataToStorage() {
@@ -67,13 +79,18 @@ const Quiz = () => {
     setIsResultVisible(true);
   };
 
+  const onStartBtnPress = () => {
+    setIsFirstLoad(false);
+  };
+
   return (
     <ImageBackground
       source={require("../../assets/images/bg_image.jpg")}
       resizeMode="cover"
       style={styles.bg_image}
     >
-      {!isModalvisible && (
+      {isFirstLoad && <Welcome onStartBtnPress={onStartBtnPress} />}
+      {!isModalvisible && !isFirstLoad && (
         <>
           <Progress currQuestIndex={currQuestIndex} length={length} />
           <QuestionCard

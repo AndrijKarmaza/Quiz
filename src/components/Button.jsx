@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 const Button = ({ text, onBtnPress }) => {
   return (
     <TouchableOpacity style={styles.btn} onPress={() => onBtnPress()}>
-      <Text>{text}</Text>
+      <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>
   );
 };
@@ -15,6 +15,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#00FFFF",
     marginTop: 30,
     alignItems: "center",
+  },
+
+  text: {
+    fontSize: 18,
   },
 });
 

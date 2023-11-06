@@ -1,4 +1,4 @@
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import { Modal, StyleSheet, Text, View } from "react-native";
 import Button from "./Button";
 import Results from "./Results";
 
@@ -13,7 +13,9 @@ const ModalVindow = ({
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.modal_container}>
         <View style={styles.content}>
-          <Text>Ваш результат {score} правильних відповідей</Text>
+          <Text style={styles.text}>
+            Ваш результат {score} правильних відповідей
+          </Text>
           <Button text={"Спробувати ще раз"} onBtnPress={onBtnPress} />
           {!isResultVisible ? (
             <Button text={"Попередні результати"} onBtnPress={seeResult} />
@@ -37,6 +39,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     backgroundColor: "#F0F8FF",
+  },
+
+  text: {
+    fontSize: 20,
+    textAlign: "center",
   },
 });
 

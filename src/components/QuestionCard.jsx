@@ -31,7 +31,7 @@ const QuestionCard = ({
             onPress={() => checkAnswer(answer)}
             disabled={!isButtonActive}
           >
-            <Text>{answer}</Text>
+            <Text style={styles.text}>{answer}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -46,12 +46,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 20,
     backgroundColor: "#00FFFF",
+    textAlign: "center",
   },
 
   answer: {
     padding: 12,
     marginTop: 10,
     borderRadius: 10,
+  },
+
+  text: {
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 
