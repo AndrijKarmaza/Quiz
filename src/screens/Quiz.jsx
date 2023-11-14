@@ -2,7 +2,7 @@ import { StyleSheet, ImageBackground } from "react-native";
 import questions from "../data/questions";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
-import ModalVindow from "../components/ModalVindow";
+import ModalWindow from "../components/ModalWindow";
 import QuestionCard from "../components/QuestionCard";
 import Progress from "../components/Progress";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -114,7 +114,7 @@ const Quiz = () => {
       )}
 
       {isModalvisible && (
-        <ModalVindow
+        <ModalWindow
           score={score}
           isVisible={isModalvisible}
           onBtnPress={newGamePlay}

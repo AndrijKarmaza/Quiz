@@ -5,7 +5,7 @@ import Webpage from "./src/screens/Webpage";
 import Quiz from "./src/screens/Quiz";
 
 export default function App() {
-  const baseURL = "https://rozeta.com.ua/ua/";
+  const baseURL = "https://rozetka.com.ua/ua/";
 
   const [isNetworkOk, setIsNetworkOk] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +25,10 @@ export default function App() {
     fetchPage();
   }, []);
 
+  const onCloseBtnClick = () => {
+    setIsNetworkOk(false);
+  };
+
   if (isLoading) {
     return (
       <View
@@ -37,7 +41,7 @@ export default function App() {
       </View>
     );
   } else if (!isLoading && isNetworkOk) {
-    return <Webpage url={baseURL} />;
+    return <Webpage url={baseURL} onPress={onCloseBtnClick} />;
   } else {
     return <Quiz />;
   }
